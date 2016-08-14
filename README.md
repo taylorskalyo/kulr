@@ -55,6 +55,8 @@ vim - modifying /home/user/.config/nvim/colors/kulr.vim
 
 # Config
 
+The kulrrc file is used to store shared configuration file settings. Kulr's option arguments can also be specified here.
+
 ## Example
 
 ``` sh
