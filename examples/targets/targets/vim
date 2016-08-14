@@ -1,0 +1,19 @@
+# For nvim use ${XDG_CONFIG_HOME%/}/nvim/colors/kulr.vim
+init_source ".vim/colors/kulr.vim"
+
+# This target script assumes that colors are stored in variables within the vim colorscheme. For example:
+# let s:foreground = "000000"
+# let s:background = "ffffff"
+# let s:color0 = "000000"
+# ...
+
+sed -i 's/\(^\s*let\s*s:foreground\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${KULR_FG}"'\2/' "${source_path}"
+sed -i 's/\(^\s*let\s*s:background\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${KULR_BG}"'\2/' "${source_path}"
+sed -i 's/\(^\s*let\s*s:selection\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${KULR_SEL}"'\2/' "${source_path}"
+sed -i 's/\(^\s*let\s*s:line\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${KULR_LINE}"'\2/'     "${source_path}"
+sed -i 's/\(^\s*let\s*s:comment\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${KULR_COM}"'\2/'   "${source_path}"
+
+for (( i = 0; i <= 15; i++ )); do
+  color="KULR_${i}"
+  sed -i 's/\(^\s*let\s*s:color'"${i}"'\s*=\s*["\x27]\).*\(["\x27]\)/\1'"${!color}"'\2/' "${source_path}"
+done

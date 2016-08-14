@@ -1,0 +1,13 @@
+init_source "${HOME%/}/.Xresources"
+
+sed -i 's/\(^\s*\*\.foreground:\s*#\).*$/\1'"${KULR_FG}"'/'     "${source_path}"
+sed -i 's/\(^\s*\*\.background:\s*#\).*$/\1'"${KULR_BG}"'/'     "${source_path}"
+sed -i 's/\(^\s*\*\.cursorColor:\s*#\).*$/\1'"${KULR_FG}"'/'    "${source_path}"
+
+for (( i = 0; i <= 15; i++ )); do
+  color="KULR_${i}"
+  sed -i 's/\(^\s*\*\.color'"${i}"':\s*#\).*$/\1'"${!color}"'/' "${source_path}"
+done
+
+# Reload config
+xrdb "${HOME%/}/.Xresources"

@@ -1,0 +1,53 @@
+# Colors based on Tomorrow Night theme
+
+# Black
+KULR_0="303030"
+KULR_8="969896"
+
+# Red
+KULR_1="cc6666"
+KULR_9="cc6666"
+
+# Green
+KULR_2="b5bd68"
+KULR_10="b5bd68"
+
+# Yellow
+KULR_3="de935f"
+KULR_11="f0c674"
+
+# Blue
+KULR_4="81a2be"
+KULR_12="81a2be"
+
+# Magenta
+KULR_5="b294bb"
+KULR_13="b294bb"
+
+# Cyan
+KULR_6="8abeb7"
+KULR_14="8abeb7"
+
+# White
+KULR_7="c5c8c6"
+KULR_15="ffffff"
+
+KULR_SEL="585858"
+KULR_LINE="3a3a3a"
+KULR_WIN="5e5e5e"
+KULR_BG="262626"
+KULR_COM="${KULR_8}"
+KULR_FG="${KULR_7}"
+KULR_HI="${KULR_4}"
+
+# Specify target scripts to run (separated by spaces)
+#targets=""
+
+# Confirm target selection before running
+#confirm=true
+
+# Output verbose messages
+#verbose=false
+
+# Back up source config files before modifying them
+#backup=false

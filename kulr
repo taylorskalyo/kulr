@@ -1,0 +1,164 @@
+#!/bin/bash
+
+set -e
+
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME-${HOME%/}/.config}"
+KULR_DIR="${XDG_CONFIG_HOME%/}/kulr"
+TARGETS_DIR="${KULR_DIR%/}/targets"
+
+config_path="${KULR_DIR%/}/kulrrc"
+
+# Options that can be set via arguments or config file
+backup=false
+confirm=true
+verbose=false
+targets="" # separated by space
+
+# List available target scripts
+list_targets() {
+  for target in "${TARGETS_DIR%/}"/*; do
+    # If there are no results, $target will be equal to the glob expression
+    if [[ "${target}" != "${TARGETS_DIR%/}/*" ]]; then
+      echo "${target##*/}"
+    fi
+  done
+}
+
+# Print help message
+show_help() {
+cat << EOF
+Usage:
+  kulr [options] [target ...]
+
+Options:
+  -l         List available target scripts
+  -b         Back up source config file before making modifications
+  -c <file>  Kulr config file (if not specified ${config_path} will be used)
+  -v         Verbose output
+  -y         Don't prompt for confirmation before running target scripts
+  -h         Print this help message and exit
+EOF
+}
+
+# Print verbose message
+vmsg() {
+  [[ "${verbose}" == "true" ]] && echo "$1" || true
+}
+
+# Prompt user to confirm target selections
+confirm_targets() {
+  for target in ${targets}; do echo "${target}"; done
+  read -r -p "Are you sure? [Y/n] " -n 1 resp
+  [[ "${resp}" != "" ]] && echo || true # new line
+  if ! [[ "${resp}" =~ ^[Yy]$ || "$resp" == "" ]]; then
+    echo "Aborting"
+    exit 0
+  fi
+}
+
+# Verify that selected targets exist and are readable
+validate_targets() {
+  targets="${targets:-$(list_targets)}"
+  if [[ "$targets" == "" ]]; then
+    echo "No target scripts selected"
+    show_help
+    exit 0
+  else
+    for target in ${targets}; do
+      if [[ ! -r "${TARGETS_DIR%/}/${target}" ]]; then
+        echo "Invalid target ${target}"
+        show_help
+        exit 0
+      fi
+    done
+  fi
+}
+
+# Verify that selected config file exists and is readable
+validate_config() {
+  if [[ ! -r "${config_path}" ]]; then
+    echo "Cannot access config path ${config_path}"
+    show_help
+    exit 0
+  fi
+}
+
+# Back up source config file
+backup_source() {
+  vmsg "${cur_target} - backing up $1 to $1.bak"
+  cp "$1"{,.bak}
+}
+
+# Register source config file and optionally back it up
+# Called from external target scripts
+init_source() {
+  source_path="$1"
+  [[ "${backup}" == "true" ]] && backup_source "${source_path}" || true
+  vmsg "${cur_target} - modifying ${source_path}"
+}
+
+# Run target script by sourcing it
+source_target() {
+  cur_target="$1"
+  local target_path="${TARGETS_DIR%/}/$1"
+  source "${target_path}"
+}
+
+# Run selected target scripts
+run() {
+  validate_targets
+  [[ "${confirm}" == true ]] && confirm_targets || true
+
+  for target in ${targets}; do
+    source_target "${target}"
+  done
+}
+
+main() {
+  OPTIND=1
+  while getopts "lc:bvyh" opt; do
+    case "${opt}" in
+      l)
+        list_targets
+        exit 0
+        ;;
+      c)
+        config_path="$OPTARG"
+        ;;
+      b)
+        local backup_opt=true
+        ;;
+      v)
+        local verbose_opt=true
+        ;;
+      y)
+        local confirm_opt=false
+        ;;
+      h)
+        show_help
+        exit 0
+        ;;
+      \?)
+        echo "Invalid option -${OPTARG}"
+        show_help
+        exit 0
+        ;;
+    esac
+  done
+
+  shift $((OPTIND-1))
+  [[ "$1" == "--" ]] && shift || true
+
+  validate_config
+  source "${config_path}"
+
+  # Argument options take precedence over config
+  backup="${backup_opt-$backup}"
+  verbose="${verbose_opt-$verbose}"
+  confirm="${confirm_opt-$confirm}"
+  targets="${@-$targets}"
+
+  run
+}
+
+main "$@"
