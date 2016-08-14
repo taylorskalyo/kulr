@@ -127,7 +127,7 @@ $ kulr -c ~/.config/kulr/themes/my-theme
 
 Target scripts hold the commands necessary to update a single config file.
 
-The `init_source` function registers the config source file and optionally backs it up. The rest of the commands are used to update lines of the file, replacing the current color with the new one. Here, we are also running `xrdb` to reload the updated config.
+The `init_source` function registers the config source file and optionally backs it up. The rest of the commands are used to update lines of the file, replacing the current color with the new one. Here we are also running `xrdb` to reload the updated config.
 
 ``` sh
 # .config/kulr/targets/xresources

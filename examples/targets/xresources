@@ -1,5 +1,11 @@
 init_source "${HOME%/}/.Xresources"
 
+# This target script assumes that colors are defined globally. For example:
+# *.foreground: #000000
+# *.background: #ffffff
+# *.color0: #000000
+# ...
+
 sed -i 's/\(^\s*\*\.foreground:\s*#\).*$/\1'"${KULR_FG}"'/'     "${source_path}"
 sed -i 's/\(^\s*\*\.background:\s*#\).*$/\1'"${KULR_BG}"'/'     "${source_path}"
 sed -i 's/\(^\s*\*\.cursorColor:\s*#\).*$/\1'"${KULR_FG}"'/'    "${source_path}"
@@ -8,6 +14,9 @@ for (( i = 0; i <= 15; i++ )); do
   color="KULR_${i}"
   sed -i 's/\(^\s*\*\.color'"${i}"':\s*#\).*$/\1'"${!color}"'/' "${source_path}"
 done
+
+# Although primarliy designed to manage colors, kulr can also be used to configure other shared settings.
+# sed -i 's/\(^\s*URxvt\.font:\s*\)[^\s].*$/\1'"${KULR_FONT}"'/'    "${source_path}"
 
 # Reload config
 xrdb "${HOME%/}/.Xresources"
