@@ -3,6 +3,12 @@ Manage multiple color configurations (e.g. vim, Xresources) in one place.
 
 A `kulrrc` file is used to store shared settings (e.g. color values), and target scripts are used to replace old configuration settings with new ones.
 
+# Quickstart
+
+1. Clone the repo
+2. Add kulr to your path
+3. Copy the example files to ~/.config/kulr
+
 # Usage
 
 ```
@@ -19,12 +25,6 @@ kulr [options] [target ...]
 -y         Don't prompt for confirmation before running target scripts
 -h         Print this help message and exit
 ```
-
-# Quickstart
-
-1. Clone the repo
-2. Add kulr to your path
-3. Copy the example files to ~/.config/kulr
 
 # Examples
 
@@ -53,13 +53,13 @@ vim - backing up /home/user/.config/nvim/colors/kulr.vim to /home/user/.config/n
 vim - modifying /home/user/.config/nvim/colors/kulr.vim
 ```
 
-# Config
+# Kulrrc
 
 The kulrrc file is used to store shared configuration file settings. Kulr's option arguments can also be specified here.
 
-## Example
-
 ``` sh
+#.config/kulr/kulrrc
+
 # Colors based on Tomorrow Night theme
 
 # Black
@@ -126,8 +126,6 @@ $ kulr -c ~/.config/kulr/themes/my-theme
 # Target scripts
 
 Target scripts hold the commands necessary to update a single config file.
-
-## Example
 
 The `init_source` function registers the config source file and optionally backs it up. The rest of the commands are used to update lines of the file, replacing the current color with the new one. Here, we are also running `xrdb` to reload the updated config.
 
